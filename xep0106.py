@@ -1,4 +1,4 @@
-#/usr/bin/env python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #Copyright © 2013 Joe Blaylock <jrbl@jrbl.org>
@@ -39,6 +39,12 @@ __forward = {' ': r'\20', '"': r'\22', '&': r'\26', "'": r'\27', '/': r'\2f',
                ':': r'\3a', '<': r'\3c', '>': r'\3e', '@': r'\40', '\\': r'\5c'}
 __reverse = dict(((v, k) for k, v in __forward.iteritems()))
 
+TEST_STRINGS = [r'\2plus\2is\4', r'foo\bar', r'foob\41r', r'c\5commas', "d'artagnan", '/.fanboy',
+                '::foo::', '<foo>', 'user@host', r'c:\net', r'c:\\net', 'space cadet', 'call me "ishmael"',
+                'at&t guy', r'c:\cool stuff']
+ESC_STRINGS = [r'\2plus\2is\4', r'foo\bar', r'foob\41r', r'c\3a\5commas', r'd\27artagnan', r'\2f.fanboy',
+                r'\3a\3afoo\3a\3a', r'\3cfoo\3c', r'user\40host', r'c\3a\net', r'c\3a\\net', 
+                r'space\20cadet', r'call\20me\20\22ishmael\22', r'at\26t\20guy', r'c\3a\cool\20stuff']
 
 def escape(unescaped_string):
     r"""Escape a string according to the rules specified in XEP-0106.
@@ -51,10 +57,6 @@ def escape(unescaped_string):
     Note that strings may *look* wrong even if they aren't actually wrong,
     because Python doesn't auto-escapes \ in all interactive cases, 
     including tests.
-
-    Note also that examples like 'space cadet' are manually verified to 
-    work correctly; they have to be input in a strange way below due to
-    limitations in the doctest module.
 
     >>> [s == escape(s) for s in (r'\2plus\2is\4', r'foo\bar', r'foob\41r')]
     [True, True, True]
@@ -74,13 +76,13 @@ def escape(unescaped_string):
     'c\\3a\\net'
     >>> escape(r'c:\\net')
     'c\\3a\\\\net'
-    >>> escape(' '.join(('space', 'cadet')))
+    >>> escape('space cadet')
     'space\\20cadet'
-    >>> escape(' '.join(('call', 'me', '"ishmael"')))
+    >>> escape('call me "ishmael"')
     'call\\20me\\20\\22ishmael\\22'
-    >>> escape(' '.join(('at&t', 'guy')))
+    >>> escape('at&t guy')
     'at\\26t\\20guy'
-    >>> escape(' '.join(('c:\cool', 'stuff')))
+    >>> escape('c:\cool stuff')
     'c\\3a\\cool\\20stuff'
     """
     characters = tuple(unescaped_string.strip())
