@@ -35,7 +35,7 @@ find this library useful, I'd love to hear from you. Complaints can be
 piped straight to /dev/null."""
 
 
-__forward = {' ': '\\20', '"': r'\22', '&': r'\26', "'": r'\27', '/': r'\2f',
+__forward = {' ': r'\20', '"': r'\22', '&': r'\26', "'": r'\27', '/': r'\2f',
                ':': r'\3a', '<': r'\3c', '>': r'\3e', '@': r'\40', '\\': r'\5c'}
 __reverse = dict(((v, k) for k, v in __forward.iteritems()))
 
@@ -51,6 +51,10 @@ def escape(unescaped_string):
     Note that strings may *look* wrong even if they aren't actually wrong,
     because Python doesn't auto-escapes \ in all interactive cases, 
     including tests.
+
+    Note also that examples like 'space cadet' are manually verified to 
+    work correctly; they have to be input in a strange way below due to
+    limitations in the doctest module.
 
     >>> [s == escape(s) for s in (r'\2plus\2is\4', r'foo\bar', r'foob\41r')]
     [True, True, True]
@@ -70,16 +74,14 @@ def escape(unescaped_string):
     'c\\3a\\net'
     >>> escape(r'c:\\net')
     'c\\3a\\\\net'
-    >>> escape(r'space cadet')
+    >>> escape(' '.join(('space', 'cadet')))
     'space\\20cadet'
-
-    # Incomplete cases because space-handling is mysterious:
-    #>>> escape(r'call me "ishmael"')
-    #'call\\20me\\20\\22ishmael\\22'
-    #>>> escape(r'at&t guy')
-    #'at\\26t\\20guy'
-    #>>> escape(r'c:\cool stuff')
-    #'c\3a\cool\20stuff'
+    >>> escape(' '.join(('call', 'me', '"ishmael"')))
+    'call\\20me\\20\\22ishmael\\22'
+    >>> escape(' '.join(('at&t', 'guy')))
+    'at\\26t\\20guy'
+    >>> escape(' '.join(('c:\cool', 'stuff')))
+    'c\\3a\\cool\\20stuff'
     """
     characters = tuple(unescaped_string.strip())
     new_characters = [''] * len(characters)
