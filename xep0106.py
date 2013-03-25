@@ -53,8 +53,6 @@ def escape(unescaped_string):
 
     >>> [s == escape(s) for s in (r'\2plus\2is\4', r'foo\bar', r'foob\41r')]
     [True, True, True]
-    >>> escape(r'c:\5commas')
-    'c\\3a\\5commas'
     >>> escape(r"d'artagnan")
     'd\\27artagnan'
     >>> escape(r'/.fanboy')
@@ -69,6 +67,8 @@ def escape(unescaped_string):
     'c\\3a\\net'
     >>> escape(r'c:\\net')
     'c\\3a\\\\net'
+    >>> escape(r'c:\5commas')
+    'c\\3a\\5c5commas'
     >>> escape('space cadet')
     'space\\20cadet'
     >>> escape('call me "ishmael"')
@@ -78,12 +78,19 @@ def escape(unescaped_string):
     >>> escape('c:\cool stuff')
     'c\\3a\\cool\\20stuff'
     """
+
+    DEBUG = False
+    if unescaped_string.strip() == r'c:\5commas':
+        DEBUG = True
+
     chars = tuple(unescaped_string.strip())
     new_chars = [''] * len(chars)
     for i in xrange(len(chars)):
         C = chars[i]
         if C == '\\':
-            if chars[i:i + 2] in __reverse:
+            if DEBUG:
+                import pdb; pdb.set_trace();
+            if ''.join(chars[i:i + 3]) in __reverse:
                 new_chars[i] = __forward[C]
             else:
                 new_chars[i] = C
@@ -93,8 +100,63 @@ def escape(unescaped_string):
 
 
 def unescape(escaped_string):
-    """Not implemented (yet)"""
-    return escaped_string
+    r"""Retrieve display string according to rules in XEP-0106.
+
+    >>> [s == unescape(s) for s in (r'\2ps\2is\4', r'foo\bar', r'fob\41r')]
+    [True, True, True]
+    >>> unescape(r'c\3a\5commas')
+    'c:\5commas'
+
+    #>>> escape(r"d'artagnan")
+    #'d\\27artagnan'
+    #>>> escape(r'/.fanboy')
+    #'\\2f.fanboy'
+    #>>> escape(r'::foo::')
+    #'\\3a\\3afoo\\3a\\3a'
+    #>>> escape(r'<foo>')
+    #'\\3cfoo\\3e'
+    #>>> escape(r'user@host')
+    #'user\\40host'
+    #>>> escape(r'c:\net')
+    #'c\\3a\\net'
+    #>>> escape(r'c:\\net')
+    #'c\\3a\\\\net'
+    #>>> escape('space cadet')
+    #'space\\20cadet'
+    #>>> escape('call me "ishmael"')
+    #'call\\20me\\20\\22ishmael\\22'
+    #>>> escape('at&t guy')
+    #'at\\26t\\20guy'
+    #>>> escape('c:\cool stuff')
+    #'c\\3a\\cool\\20stuff'
+    """
+    #chars = tuple(escaped_string.strip())
+    chars = escaped_string.strip()
+
+    new_chars = ''
+    i = 0
+    while i < len(chars):
+        C = chars[i]
+        if C == '\\':
+            #if chars[0] == 'c' and i == 1:
+            #    import pdb; pdb.set_trace();
+            #if chars[i:i + 2] in __reverse:
+            #    new_chars[i] = __forward[C]
+            #else:
+            #    new_chars[i] = C
+            if chars[i:i + 3] in __reverse:
+                new_chars += __reverse[chars[i:i + 3]]
+                i += 3
+                continue
+            else:
+                new_chars += C
+        else:
+            #new_chars[i] = __forward[C] if C != '\\' and C in __forward else C
+            new_chars += C
+        i += 1
+
+
+    return ''.join(new_chars)
 
 
 if __name__ == "__main__":
