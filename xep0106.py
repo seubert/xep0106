@@ -78,18 +78,11 @@ def escape(unescaped_string):
     >>> escape('c:\cool stuff')
     'c\\3a\\cool\\20stuff'
     """
-
-    DEBUG = False
-    if unescaped_string.strip() == r'c:\5commas':
-        DEBUG = True
-
     chars = tuple(unescaped_string.strip())
     new_chars = [''] * len(chars)
     for i in xrange(len(chars)):
         C = chars[i]
         if C == '\\':
-            if DEBUG:
-                import pdb; pdb.set_trace();
             if ''.join(chars[i:i + 3]) in __reverse:
                 new_chars[i] = __forward[C]
             else:
@@ -104,31 +97,30 @@ def unescape(escaped_string):
 
     >>> [s == unescape(s) for s in (r'\2ps\2is\4', r'foo\bar', r'fob\41r')]
     [True, True, True]
-    >>> unescape(r'c\3a\5commas')
-    'c:\5commas'
-
-    #>>> escape(r"d'artagnan")
-    #'d\\27artagnan'
-    #>>> escape(r'/.fanboy')
-    #'\\2f.fanboy'
-    #>>> escape(r'::foo::')
-    #'\\3a\\3afoo\\3a\\3a'
-    #>>> escape(r'<foo>')
-    #'\\3cfoo\\3e'
-    #>>> escape(r'user@host')
-    #'user\\40host'
-    #>>> escape(r'c:\net')
-    #'c\\3a\\net'
-    #>>> escape(r'c:\\net')
-    #'c\\3a\\\\net'
-    #>>> escape('space cadet')
-    #'space\\20cadet'
-    #>>> escape('call me "ishmael"')
-    #'call\\20me\\20\\22ishmael\\22'
-    #>>> escape('at&t guy')
-    #'at\\26t\\20guy'
-    #>>> escape('c:\cool stuff')
-    #'c\\3a\\cool\\20stuff'
+    >>> unescape('d\\27artagnan')
+    "d'artagnan"
+    >>> unescape('\\2f.fanboy')
+    '/.fanboy'
+    >>> unescape('\\3a\\3afoo\\3a\\3a')
+    '::foo::'
+    >>> unescape('\\3cfoo\\3e')
+    '<foo>'
+    >>> unescape('user\\40host')
+    'user@host'
+    >>> unescape('c\\3a\\5c5commas')
+    'c:\\5commas'
+    >>> unescape('c\\3a\\net')
+    'c:\\net'
+    >>> unescape('c\\3a\\\\net')
+    'c:\\\\net'
+    >>> unescape('space\\20cadet')
+    'space cadet'
+    >>> unescape('call\\20me\\20\\22ishmael\\22')
+    'call me "ishmael"'
+    >>> unescape('at\\26t\\20guy')
+    'at&t guy'
+    >>> unescape('c\\3a\\cool\\20stuff')
+    'c:\\cool stuff'
     """
     #chars = tuple(escaped_string.strip())
     chars = escaped_string.strip()
@@ -154,7 +146,6 @@ def unescape(escaped_string):
             #new_chars[i] = __forward[C] if C != '\\' and C in __forward else C
             new_chars += C
         i += 1
-
 
     return ''.join(new_chars)
 
