@@ -37,7 +37,7 @@ piped straight to /dev/null."""
 
 __forward = {' ': r'\20', '"': r'\22', '&': r'\26', "'": r'\27', '/': r'\2f',
              ':': r'\3a', '<': r'\3c', '>': r'\3e', '@': r'\40', '\\': r'\5c'}
-__reverse = dict(((v, k) for k, v in __forward.iteritems()))
+__reverse = dict(((v, k) for k, v in list(__forward.items())))
 
 
 def escape(unescaped_string):
@@ -80,7 +80,7 @@ def escape(unescaped_string):
     """
     chars = tuple(unescaped_string.strip())
     new_chars = [''] * len(chars)
-    for i in xrange(len(chars)):
+    for i in range(len(chars)):
         C = chars[i]
         if C == '\\':
             if ''.join(chars[i:i + 3]) in __reverse:
