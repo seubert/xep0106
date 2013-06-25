@@ -81,14 +81,14 @@ def escape(unescaped_string):
     chars = unescaped_string.strip()
     new_chars = [''] * len(chars)
     for i in range(len(chars)):
-        C = chars[i]
-        if C == '\\':
+        char = chars[i]
+        if char == '\\':
             if ''.join(chars[i:i + 3]) in __reverse:
-                new_chars[i] = __forward[C]
+                new_chars[i] = __forward[char]
             else:
-                new_chars[i] = C
+                new_chars[i] = char
         else:
-            new_chars[i] = __forward[C] if C != '\\' and C in __forward else C
+            new_chars[i] = __forward[char] if char in __forward else char
     return ''.join(new_chars)
 
 
@@ -127,16 +127,16 @@ def unescape(escaped_string):
     new_chars = ''
     i = 0
     while i < len(chars):
-        C = chars[i]
-        if C == '\\':
+        char = chars[i]
+        if char == '\\':
             if chars[i:i + 3] in __reverse:
                 new_chars += __reverse[chars[i:i + 3]]
                 i += 3
                 continue
             else:
-                new_chars += C
+                new_chars += char
         else:
-            new_chars += C
+            new_chars += char
         i += 1
 
     return ''.join(new_chars)
