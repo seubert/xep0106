@@ -78,7 +78,7 @@ def escape(unescaped_string):
     >>> escape('c:\cool stuff')
     'c\\3a\\cool\\20stuff'
     """
-    chars = tuple(unescaped_string.strip())
+    chars = unescaped_string.strip()
     new_chars = [''] * len(chars)
     for i in range(len(chars)):
         C = chars[i]
@@ -122,7 +122,6 @@ def unescape(escaped_string):
     >>> unescape('c\\3a\\cool\\20stuff')
     'c:\\cool stuff'
     """
-    #chars = tuple(escaped_string.strip())
     chars = escaped_string.strip()
 
     new_chars = ''
@@ -130,12 +129,6 @@ def unescape(escaped_string):
     while i < len(chars):
         C = chars[i]
         if C == '\\':
-            #if chars[0] == 'c' and i == 1:
-            #    import pdb; pdb.set_trace();
-            #if chars[i:i + 2] in __reverse:
-            #    new_chars[i] = __forward[C]
-            #else:
-            #    new_chars[i] = C
             if chars[i:i + 3] in __reverse:
                 new_chars += __reverse[chars[i:i + 3]]
                 i += 3
@@ -143,7 +136,6 @@ def unescape(escaped_string):
             else:
                 new_chars += C
         else:
-            #new_chars[i] = __forward[C] if C != '\\' and C in __forward else C
             new_chars += C
         i += 1
 
